@@ -55,15 +55,33 @@ function showComingSoon(e) {
   e.preventDefault(); // 🚫 evita que navegue a otra página
   document.getElementById("coming-soon-overlay").style.display = "flex";
 }
-</script>
-    <script>
+<script>
 document.addEventListener("click", function(e) {
-  const text = e.target.innerText || "";
+  const text = (e.target.innerText || "").toLowerCase();
 
-  if (text.includes("Explorar Fincas")) {
+  // Lista de textos que queremos interceptar
+  const triggers = [
+    "explorar fincas",
+    "ver fincas",
+    "explore verified farms",
+    "view farms"
+  ];
+
+  const match = triggers.some(t => text.includes(t));
+
+  if (match) {
     e.preventDefault();
 
-    document.getElementById("coming-soon-overlay").style.display = "flex";
+    const overlay = document.getElementById("coming-soon-overlay");
+    
+    // Cambiar texto dinámicamente según idioma
+    if (text.includes("explore") || text.includes("view")) {
+      overlay.querySelector("h1").innerText = "COMING SOON!";
+    } else {
+      overlay.querySelector("h1").innerText = "¡Próximamente!";
+    }
+
+    overlay.style.display = "flex";
   }
 });
 </script>
