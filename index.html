@@ -4,86 +4,91 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AgroNetWorth</title>
+
     <script type="module" crossorigin src="assets/index-Lm1dkS6q.js"></script>
     <link rel="stylesheet" crossorigin href="assets/index-CDe0aTao.css">
     <link rel="icon" type="image/png" href="/favicon.png" />
+
     <meta property="og:title" content="AgroNetWorth" />
-<meta property="og:description" content="Plataforma especializada en la inversión en tierras agrícolas en Venezuela." />
-<meta property="og:image" content="https://agronetworth.com/preview.jpg" />
-<meta property="og:url" content="https://agronetworth.com" />
-<meta property="og:type" content="website" />
+    <meta property="og:description" content="Plataforma especializada en la inversión en tierras agrícolas en Venezuela." />
+    <meta property="og:image" content="https://agronetworth.com/preview.jpg" />
+    <meta property="og:url" content="https://agronetworth.com" />
+    <meta property="og:type" content="website" />
+
     <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="AgroNetWorth" />
-<meta name="twitter:description" content="Invierte en tierras agrícolas con información clara, confiable y categorizada." />
-<meta name="twitter:image" content="https://agronetworth.com/preview.jpg" />
+    <meta name="twitter:title" content="AgroNetWorth" />
+    <meta name="twitter:description" content="Invierte en tierras agrícolas con información clara, confiable y categorizada." />
+    <meta name="twitter:image" content="https://agronetworth.com/preview.jpg" />
+
     <style>
-#coming-soon-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+      #coming-soon-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
 
-  backdrop-filter: blur(8px);
-  background: rgba(0, 0, 0, 0.4);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  z-index: 9999;
-}
-
-.coming-soon-content {
-  color: white;
-  font-size: 3rem;
-  font-weight: bold;
-  text-align: center;
-}
-</style>
+      .coming-soon-content {
+        color: white;
+        font-size: 3rem;
+        font-weight: bold;
+        text-align: center;
+      }
+    </style>
   </head>
+
   <body>
     <div id="root"></div>
 
-<div id="coming-soon-overlay" style="display: none;">
-  <div class="coming-soon-content">
-    <h1>¡Próximamente!</h1>
-  </div>
-</div>
+    <div id="coming-soon-overlay" onclick="closeComingSoon()">
+      <div class="coming-soon-content">
+        <h1>¡Próximamente!</h1>
+      </div>
+    </div>
+
     <script>
-function showComingSoon(e) {
-  e.preventDefault(); // 🚫 evita que navegue a otra página
-  document.getElementById("coming-soon-overlay").style.display = "flex";
-}
-<script>
-document.addEventListener("click", function(e) {
-  const text = (e.target.innerText || "").toLowerCase();
+      document.addEventListener("click", function(e) {
+        const target = e.target.closest("a, button");
+        if (!target) return;
 
-  // Lista de textos que queremos interceptar
-  const triggers = [
-    "explorar fincas",
-    "ver fincas",
-    "explore verified farms",
-    "view farms"
-  ];
+        const text = (target.innerText || "").toLowerCase();
 
-  const match = triggers.some(t => text.includes(t));
+        const triggers = [
+          "explorar fincas",
+          "ver fincas",
+          "explore verified farms",
+          "view farms"
+        ];
 
-  if (match) {
-    e.preventDefault();
+        const match = triggers.some(t => text.includes(t));
 
-    const overlay = document.getElementById("coming-soon-overlay");
-    
-    // Cambiar texto dinámicamente según idioma
-    if (text.includes("explore") || text.includes("view")) {
-      overlay.querySelector("h1").innerText = "COMING SOON!";
-    } else {
-      overlay.querySelector("h1").innerText = "¡Próximamente!";
-    }
+        if (match) {
+          e.preventDefault();
 
-    overlay.style.display = "flex";
-  }
-});
-</script>
+          const overlay = document.getElementById("coming-soon-overlay");
+
+          // idioma automático
+          if (text.includes("explore") || text.includes("view")) {
+            overlay.querySelector("h1").innerText = "COMING SOON!";
+          } else {
+            overlay.querySelector("h1").innerText = "¡Próximamente!";
+          }
+
+          overlay.style.display = "flex";
+        }
+      });
+
+      function closeComingSoon() {
+        document.getElementById("coming-soon-overlay").style.display = "none";
+        window.location.href = "./";
+      }
+    </script>
   </body>
 </html>
