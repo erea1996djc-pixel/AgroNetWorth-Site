@@ -90,5 +90,28 @@
         window.location.href = "./";
       }
     </script>
+    <script>
+window.addEventListener("load", function() {
+  // Espera a que React cargue
+  setTimeout(() => {
+    const buttons = document.querySelectorAll("button, a");
+
+    buttons.forEach(btn => {
+      const text = (btn.innerText || "").toLowerCase();
+
+      // Detecta botón de idioma inglés → lo cambia a español
+      if (text.includes("english")) {
+        // Busca opción Spanish y hace click
+        buttons.forEach(b => {
+          const t = (b.innerText || "").toLowerCase();
+          if (t.includes("español") || t.includes("spanish")) {
+            b.click();
+          }
+        });
+      }
+    });
+  }, 1000); // espera 1 segundo a que cargue todo
+});
+</script>
   </body>
 </html>
