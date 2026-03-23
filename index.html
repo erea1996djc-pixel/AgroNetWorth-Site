@@ -91,27 +91,40 @@
       }
     </script>
     <script>
-window.addEventListener("load", function() {
-  // Espera a que React cargue
-  setTimeout(() => {
-    const buttons = document.querySelectorAll("button, a");
+function forceSpanish() {
+  const userLang = navigator.language || navigator.userLanguage;
 
-    buttons.forEach(btn => {
-      const text = (btn.innerText || "").toLowerCase();
+  // Solo actuar si el usuario habla español
+  if (!userLang.toLowerCase().startsWith("es")) return;
 
-      // Detecta botón de idioma inglés → lo cambia a español
-      if (text.includes("english")) {
-        // Busca opción Spanish y hace click
-        buttons.forEach(b => {
-          const t = (b.innerText || "").toLowerCase();
-          if (t.includes("español") || t.includes("spanish")) {
-            b.click();
-          }
-        });
-      }
-    });
-  }, 1000); // espera 1 segundo a que cargue todo
-});
+  const buttons = document.querySelectorAll("button, a");
+
+  let found = false;
+
+  buttons.forEach(btn => {
+    const text = (btn.innerText || "").trim().toUpperCase();
+
+    // 👇 AHORA BUSCAMOS "ES" DIRECTAMENTE
+    if (text === "ES") {
+      btn.click();
+      found = true;
+    }
+  });
+
+  return found;
+}
+
+// 🔁 intenta varias veces hasta que React cargue
+let attempts = 0;
+const interval = setInterval(() => {
+  const success = forceSpanish();
+
+  attempts++;
+
+  if (success || attempts > 10) {
+    clearInterval(interval);
+  }
+}, 500);
 </script>
   </body>
 </html>
