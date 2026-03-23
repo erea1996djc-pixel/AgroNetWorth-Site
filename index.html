@@ -76,7 +76,7 @@
 
           // idioma automático
           if (text.includes("explore") || text.includes("view")) {
-            overlay.querySelector("h1").innerText = "COMING SOON!";
+            overlay.querySelector("h1").innerText = "Coming Soon!";
           } else {
             overlay.querySelector("h1").innerText = "¡Próximamente!";
           }
@@ -94,34 +94,44 @@
 function forceSpanish() {
   const userLang = navigator.language || navigator.userLanguage;
 
-  // Solo actuar si el usuario habla español
+  // Solo actuar si navegador está en español
   if (!userLang.toLowerCase().startsWith("es")) return;
 
-  const buttons = document.querySelectorAll("button, a");
+  // Detectar si la página está en inglés
+  const pageText = document.body.innerText.toLowerCase();
 
-  let found = false;
+  const isEnglish =
+    pageText.includes("explore") ||
+    pageText.includes("verified farms") ||
+    pageText.includes("view farms");
+
+  if (!isEnglish) return true; // ya está en español
+
+  // Buscar el botón toggle (el que tiene EN | ES)
+  const buttons = document.querySelectorAll("button");
+
+  let clicked = false;
 
   buttons.forEach(btn => {
-    const text = (btn.innerText || "").trim().toUpperCase();
+    const text = (btn.innerText || "").toUpperCase();
 
-    // 👇 AHORA BUSCAMOS "ES" DIRECTAMENTE
-    if (text === "ES") {
-      btn.click();
-      found = true;
+    if (text.includes("EN") && text.includes("ES")) {
+      btn.click(); // 🔥 CAMBIA IDIOMA
+      clicked = true;
     }
   });
 
-  return found;
+  return clicked;
 }
 
-// 🔁 intenta varias veces hasta que React cargue
+// 🔁 intentar varias veces hasta que React cargue
 let attempts = 0;
 const interval = setInterval(() => {
   const success = forceSpanish();
 
   attempts++;
 
-  if (success || attempts > 10) {
+  if (success || attempts > 15) {
     clearInterval(interval);
   }
 }, 500);
