@@ -91,13 +91,15 @@
       }
     </script>
     <script>
-function forceSpanish() {
+function forceSpanishOnce() {
   const userLang = navigator.language || navigator.userLanguage;
 
-  // Solo actuar si navegador está en español
+  // Solo si el navegador está en español
   if (!userLang.toLowerCase().startsWith("es")) return;
 
-  // Detectar si la página está en inglés
+  // 🧠 EVITA LOOP: si ya se ejecutó, no hacer nada
+  if (sessionStorage.getItem("lang-set")) return;
+
   const pageText = document.body.innerText.toLowerCase();
 
   const isEnglish =
@@ -105,33 +107,33 @@ function forceSpanish() {
     pageText.includes("verified farms") ||
     pageText.includes("view farms");
 
-  if (!isEnglish) return true; // ya está en español
+  if (!isEnglish) {
+    sessionStorage.setItem("lang-set", "done");
+    return;
+  }
 
-  // Buscar el botón toggle (el que tiene EN | ES)
   const buttons = document.querySelectorAll("button");
-
-  let clicked = false;
 
   buttons.forEach(btn => {
     const text = (btn.innerText || "").toUpperCase();
 
     if (text.includes("EN") && text.includes("ES")) {
-      btn.click(); // 🔥 CAMBIA IDIOMA
-      clicked = true;
+      btn.click();
+
+      // ✅ MARCA COMO EJECUTADO
+      sessionStorage.setItem("lang-set", "done");
     }
   });
-
-  return clicked;
 }
 
-// 🔁 intentar varias veces hasta que React cargue
+// 🔁 intentar varias veces pero controlado
 let attempts = 0;
 const interval = setInterval(() => {
-  const success = forceSpanish();
+  forceSpanishOnce();
 
   attempts++;
 
-  if (success || attempts > 15) {
+  if (attempts > 10) {
     clearInterval(interval);
   }
 }, 500);
