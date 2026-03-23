@@ -91,52 +91,64 @@
       }
     </script>
     <script>
-function forceSpanishOnce() {
+(function () {
   const userLang = navigator.language || navigator.userLanguage;
 
-  // Solo si el navegador está en español
   if (!userLang.toLowerCase().startsWith("es")) return;
 
-  // 🧠 EVITA LOOP: si ya se ejecutó, no hacer nada
   if (sessionStorage.getItem("lang-set")) return;
 
-  const pageText = document.body.innerText.toLowerCase();
+  function switchToSpanish() {
+    const pageText = document.body.innerText.toLowerCase();
 
-  const isEnglish =
-    pageText.includes("explore") ||
-    pageText.includes("verified farms") ||
-    pageText.includes("view farms");
+    const isEnglish =
+      pageText.includes("explore") ||
+      pageText.includes("verified farms") ||
+      pageText.includes("view farms");
 
-  if (!isEnglish) {
-    sessionStorage.setItem("lang-set", "done");
-    return;
-  }
-
-  const buttons = document.querySelectorAll("button");
-
-  buttons.forEach(btn => {
-    const text = (btn.innerText || "").toUpperCase();
-
-    if (text.includes("EN") && text.includes("ES")) {
-      btn.click();
-
-      // ✅ MARCA COMO EJECUTADO
+    if (!isEnglish) {
       sessionStorage.setItem("lang-set", "done");
+      return true;
     }
-  });
-}
 
-// 🔁 intentar varias veces pero controlado
-let attempts = 0;
-const interval = setInterval(() => {
-  forceSpanishOnce();
+    const buttons = document.querySelectorAll("button");
 
-  attempts++;
+    for (let btn of buttons) {
+      const text = (btn.innerText || "").toUpperCase();
 
-  if (attempts > 10) {
-    clearInterval(interval);
+      if (text.includes("EN") && text.includes("ES")) {
+        btn.click();
+        sessionStorage.setItem("lang-set", "done");
+        return true;
+      }
+    }
+
+    return false;
   }
-}, 500);
+
+  // 🔥 CLAVE: esperar estabilidad del DOM (React ya cargado)
+  let stableCount = 0;
+  let lastHTML = "";
+
+  const observer = setInterval(() => {
+    const currentHTML = document.body.innerHTML;
+
+    if (currentHTML === lastHTML) {
+      stableCount++;
+    } else {
+      stableCount = 0;
+      lastHTML = currentHTML;
+    }
+
+    // cuando el DOM deja de cambiar → React terminó
+    if (stableCount >= 3) {
+      clearInterval(observer);
+      setTimeout(() => {
+        switchToSpanish();
+      }, 300);
+    }
+  }, 300);
+})();
 </script>
   </body>
 </html>
